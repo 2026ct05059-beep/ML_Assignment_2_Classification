@@ -1,309 +1,302 @@
-# Machine Learning Classification Model Comparison
 
-## 1. Problem Statement
 
+
+
+
+
+Machine Learning Classification Model Comparison
+1. Problem Statement
 The objective of this project is to implement multiple machine learning classification models using one classification dataset and compare their performance using standard evaluation metrics.
 
 The project implements the following five classification models:
 
-1. Logistic Regression
-2. Decision Tree Classifier
-3. K-Nearest Neighbor Classifier
-4. Naive Bayes Classifier
-5. Random Forest Classifier (Ensemble)
-
+Logistic Regression
+Decision Tree Classifier
+K-Nearest Neighbor Classifier
+Gaussian Naive Bayes Classifier
+Random Forest Classifier (Ensemble)
 Each model is evaluated using:
 
-- Accuracy
-- AUC Score
-- Precision
-- Recall
-- F1 Score
-- Matthews Correlation Coefficient (MCC)
+Accuracy
+AUC Score
+Precision
+Recall
+F1 Score
+Matthews Correlation Coefficient (MCC)
+2. Dataset Description
+Dataset Name
+UCI Adult / Census Income Dataset
 
----
-
-## 2. Dataset Description
-
-### Dataset Name
-
-**UCI Adult / Census Income Dataset**
-
-### Dataset Source
-
+Dataset Source
 UCI Machine Learning Repository
 
-### Dataset Link
-
+Dataset URL
 https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data
 
-### Problem Type
-
+Problem Type
 Binary classification.
 
-### Target Variable
-
+Target Variable
 The target variable is:
 
-`income`
+income
 
 The target is converted into binary values for model training:
 
-- `<=50K` → `0`
-- `>50K` → `1`
+<=50K → 0
+>50K → 1
+Dataset Size
+The original dataset loaded in the notebook contains:
 
-### Why This Dataset Was Selected
+32,561 instances
+14 input features
+1 target column
+After duplicate removal:
 
-The dataset contains more than the minimum required number of instances and features and contains both numerical and categorical variables. It also provides missing values and class-distribution characteristics that allow the required preprocessing and class-imbalance analysis to be demonstrated.
+32,537 instances
+14 input features
+Feature Types
+Numerical Features
+age
+fnlwgt
+education_num
+capital_gain
+capital_loss
+hours_per_week
+Categorical Features
+workclass
+education
+marital_status
+occupation
+relationship
+race
+sex
+native_country
+Missing Values
+The notebook identified the following missing values before preprocessing:
 
-### Feature Types
+Feature	Missing Values	Percentage
+occupation	1,843	5.6601%
+workclass	1,836	5.6386%
+native_country	583	1.7905%
+Other features	0	0%
+Duplicate Records
+The notebook identified:
 
-#### Numerical Features
+24 duplicate rows
+After removing duplicates:
 
-- age
-- fnlwgt
-- education_num
-- capital_gain
-- capital_loss
-- hours_per_week
+32,537 rows remained.
+Class Distribution
+The target class distribution after duplicate removal was:
 
-#### Categorical Features
+Income Class	Count	Percentage
+<=50K	24,698	75.9074%
+>50K	7,839	24.0926%
+The dataset therefore contains a noticeable class imbalance, which was examined before model training.
 
-- workclass
-- education
-- marital_status
-- occupation
-- relationship
-- race
-- sex
-- native_country
-
-### Dataset Analysis
-
-The project examines:
-
-- Number of instances
-- Number of features
-- Feature types
-- Missing values
-- Duplicate records
-- Class distribution
-
-Actual dataset statistics should be updated here after execution.
-
----
-
-## 3. GitHub Repository Link
-
-**Repository:** [ADD YOUR GITHUB REPOSITORY LINK HERE]
+3. GitHub Repository Link
+Repository: [ADD YOUR GITHUB REPOSITORY LINK HERE]
 
 Example:
 
-`https://github.com/<username>/ML_Assignment_2_Classification`
+https://github.com/<username>/ML_Assignment_2_Classification
 
----
+4. Data Preprocessing
+The preprocessing implemented in the Colab notebook consists of the following steps.
 
-## 4. Data Preprocessing
+4.1 Missing Value Handling
+Missing values are handled inside the preprocessing pipeline.
 
-The following preprocessing steps are applied before model training.
+For numerical features:
 
-### 4.1 Missing Values
+SimpleImputer(strategy="median")
+For categorical features:
 
-Missing values are identified and handled.
+SimpleImputer(strategy="most_frequent")
+4.2 Duplicate Handling
+Duplicate rows are identified and removed before model training.
 
-- Numerical features: median imputation
-- Categorical features: most-frequent imputation
+The dataset contained 24 duplicate rows, which were removed.
 
-### 4.2 Duplicate Records
+4.3 Categorical Encoding
+Categorical features are converted into numerical form using:
 
-Duplicate records are identified and removed.
+OneHotEncoder(handle_unknown="ignore", sparse_output=False)
 
-### 4.3 Categorical Encoding
+4.4 Feature Scaling
+Numerical features are scaled using:
 
-Categorical features are converted into numerical representation using OneHotEncoder.
+StandardScaler()
 
-`handle_unknown="ignore"` is used so that unseen categories in the test data do not cause an error.
+4.5 Train-Test Split
+The notebook uses an 80:20 train-test split with stratification:
 
-### 4.4 Feature Scaling
+train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    stratify=y,
+    random_state=42
+)
+The resulting dataset sizes were:
 
-Numerical features are standardized using StandardScaler where required.
+Training rows: 26,029
+Testing rows: 6,508
+4.6 Fixed Random Seed
+A fixed random seed is used:
 
-### 4.5 Train-Test Split
+random_state = 42
 
-The dataset is divided into:
+4.7 Data Leakage Prevention
+The preprocessing pipeline is fitted on the training data and then applied to the test data.
 
-- 80% training data
-- 20% testing data
+This ensures that information from the test set is not used during preprocessing or model training.
 
-The split is stratified to maintain the class distribution.
-
-### 4.6 Fixed Random Seed
-
-A fixed random seed is used for reproducibility.
-
-`random_state = 42`
-
-### 4.7 Data Leakage Prevention
-
-Preprocessing is fitted only on the training data and then applied to the test data.
-
----
-
-## 5. Models Used
-
-### 5.1 Logistic Regression
-
+5. Models Used
+5.1 Logistic Regression
 Logistic Regression is used as a baseline binary classification model.
 
+Configuration:
+
+max_iter = 1000
+random_state = 42
 Source file:
 
-`model/logistic_regression.py`
+model/logistic_regression.py
 
-### 5.2 Decision Tree Classifier
+5.2 Decision Tree Classifier
+Decision Tree Classifier predicts the target class using feature-based decision rules.
 
-Decision Tree Classifier predicts the target class using a sequence of feature-based decision rules.
+Configuration:
 
+random_state = 42
 Source file:
 
-`model/decision_tree.py`
+model/decision_tree.py
 
-### 5.3 K-Nearest Neighbor Classifier
+5.3 K-Nearest Neighbor Classifier
+KNN predicts the class of an observation based on its nearest neighboring observations.
 
-KNN predicts the class of an observation based on the classes of its nearest neighboring observations.
+Configuration:
 
+n_neighbors = 5
 Source file:
 
-`model/knn.py`
+model/knn.py
 
-### 5.4 Naive Bayes Classifier
-
+5.4 Gaussian Naive Bayes
 Gaussian Naive Bayes is used as the Naive Bayes implementation.
 
-Source file:
-
-`model/naive_bayes.py`
-
-### 5.5 Random Forest Classifier
-
-Random Forest is the ensemble model used in this project and combines multiple decision trees.
+The model is trained after applying the preprocessing transformation to the training data.
 
 Source file:
 
-`model/random_forest.py`
+model/naive_bayes.py
 
----
+5.5 Random Forest Classifier
+Random Forest is the ensemble model used in this project.
 
-## 6. Evaluation Metrics
+Configuration:
 
-Each model is evaluated using the following metrics.
+n_estimators = 200
+random_state = 42
+n_jobs = -1
+Source file:
 
-### Accuracy
+model/random_forest.py
 
+6. Evaluation Metrics
+The following metrics are calculated for each model.
+
+Accuracy
 Measures the proportion of correctly classified observations.
 
-### AUC Score
+AUC Score
+Measures the ability of the model to distinguish between the two classes.
 
-Measures the model's ability to distinguish between the classes.
+Precision
+Measures how many of the observations predicted as positive are actually positive.
 
-### Precision
+Recall
+Measures how many of the actual positive observations are correctly identified.
 
-Measures how many observations predicted as positive are actually positive.
+F1 Score
+The harmonic mean of Precision and Recall.
 
-### Recall
+Matthews Correlation Coefficient (MCC)
+MCC provides a balanced classification-performance measure based on all four confusion-matrix categories.
 
-Measures how many actual positive observations are correctly identified.
+7. Model Comparison
+All five models were trained and evaluated on the same dataset using the same 80:20 stratified train-test split and the same preprocessing approach.
 
-### F1 Score
+The final results obtained from the Colab notebook are:
 
-Provides the harmonic mean of Precision and Recall.
+ML Model Name	Accuracy	AUC	Precision	Recall	F1	MCC
+Logistic Regression	0.8569	0.9099	0.7437	0.6199	0.6762	0.5893
+Decision Tree	0.8207	0.7539	0.6286	0.6250	0.6268	0.5088
+KNN	0.8379	0.8653	0.6778	0.6237	0.6496	0.5452
+Naive Bayes	0.5361	0.7492	0.3369	0.9560	0.4983	0.3300
+Random Forest (Ensemble)	0.8619	0.9092	0.7451	0.6486	0.6935	0.6073
+Average Score Comparison
+The notebook also calculated the average of the six evaluation metrics for each model:
 
-### Matthews Correlation Coefficient (MCC)
+ML Model Name	Average Score
+Random Forest	0.744254
+Logistic Regression	0.732657
+KNN	0.699907
+Decision Tree	0.660630
+Naive Bayes	0.567749
+Based on the average score across the six metrics, Random Forest is the overall winner for this dataset.
 
-Provides a balanced measure of classification quality using all four confusion-matrix categories.
+Key Comparison
+Random Forest achieved the highest Accuracy.
+Logistic Regression achieved the highest AUC.
+Random Forest achieved the highest Precision.
+Naive Bayes achieved the highest Recall.
+Random Forest achieved the highest F1 Score.
+Random Forest achieved the highest MCC.
+Random Forest achieved the highest average score across the six metrics.
+8. Visualization
+The notebook generated two visual representations of model performance.
 
----
+8.1 Classification Model Performance Comparison
+A heatmap was created using:
 
-## 7. Model Comparison
+Accuracy
+AUC
+Precision
+Recall
+F1
+MCC
+The heatmap is titled:
 
-The actual results below must be replaced with the values obtained from the executed models.
+Classification Model Performance Comparison
 
-| ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
-|---|---:|---:|---:|---:|---:|---:|
-| Logistic Regression | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] |
-| Decision Tree | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] |
-| KNN | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] |
-| Naive Bayes | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] |
-| Random Forest (Ensemble) | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] | [RESULT] |
+8.2 Model Performance Comparison Chart
+A bar chart was generated to compare the six evaluation metrics across all five models.
 
-> Note: The assignment lists five required models. The comparison-table wording mentions six models, but only five model names are specified. This README therefore follows the five explicitly named required models rather than inventing a sixth model.
+The chart uses:
 
----
+ML Model Name on the X-axis
+Metric Score on the Y-axis
+These visualizations should be included in the final project / README as required.
 
-## 8. Visualization
+9. Model Performance Observations
+ML Model Name	Observation about Model Performance
+Logistic Regression	Logistic Regression achieved an Accuracy of 0.8569 and the highest AUC of 0.9099. It also achieved Precision of 0.7437, Recall of 0.6199, F1 Score of 0.6762, and MCC of 0.5893. It provided strong and relatively balanced baseline performance and ranked second by average score.
+Decision Tree	Decision Tree achieved an Accuracy of 0.8207, AUC of 0.7539, Precision of 0.6286, Recall of 0.6250, F1 Score of 0.6268, and MCC of 0.5088. Its performance was below Logistic Regression, KNN and Random Forest across most metrics.
+KNN	KNN achieved an Accuracy of 0.8379, AUC of 0.8653, Precision of 0.6778, Recall of 0.6237, F1 Score of 0.6496, and MCC of 0.5452. It performed better overall than the Decision Tree, but below Logistic Regression and Random Forest.
+Naive Bayes	Naive Bayes achieved an Accuracy of 0.5361, AUC of 0.7492, Precision of 0.3369, Recall of 0.9560, F1 Score of 0.4983, and MCC of 0.3300. It achieved the highest Recall but had very low Precision, F1 and MCC, resulting in the weakest overall performance.
+Random Forest (Ensemble)	Random Forest achieved the highest Accuracy (0.8619), Precision (0.7451), Recall (0.6486), F1 Score (0.6935) and MCC (0.6073). Its AUC of 0.9092 was also very close to Logistic Regression's highest AUC of 0.9099. It achieved the highest average score of 0.744254 and was selected as the overall winner.
+Overall Winner
+Random Forest
 
-The performance of the five classification models is represented graphically.
+Random Forest was selected as the overall winner because it achieved the highest average score across Accuracy, AUC, Precision, Recall, F1 Score and MCC.
 
-The project includes:
+It also achieved the highest Accuracy, Precision, Recall, F1 Score and MCC among the five evaluated models.
 
-1. Model performance comparison chart
-2. Metric comparison visualization / heatmap
-
-The visualization compares:
-
-- Accuracy
-- AUC
-- Precision
-- Recall
-- F1
-- MCC
-
-Add the final generated graph images here after running the project.
-
-Example:
-
-`results/model_comparison.png`
-
----
-
-## 9. Observations
-
-### Logistic Regression
-
-**Observation:** [ADD OBSERVATION FROM ACTUAL RESULTS]
-
-### Decision Tree
-
-**Observation:** [ADD OBSERVATION FROM ACTUAL RESULTS]
-
-### KNN
-
-**Observation:** [ADD OBSERVATION FROM ACTUAL RESULTS]
-
-### Naive Bayes
-
-**Observation:** [ADD OBSERVATION FROM ACTUAL RESULTS]
-
-### Random Forest
-
-**Observation:** [ADD OBSERVATION FROM ACTUAL RESULTS]
-
----
-
-## 10. Overall Winner
-
-### Overall Winner
-
-**[ADD MODEL NAME AFTER ACTUAL EXECUTION]**
-
-### Reason
-
-The overall winner should be selected based on the actual comparison of Accuracy, AUC, Precision, Recall, F1 Score and MCC.
-
----
-
-## 11. Project Structure
-
-```text
+10. Project Structure
 ML_Assignment_2_Classification/
 │
 ├── README.md
@@ -317,119 +310,109 @@ ML_Assignment_2_Classification/
     ├── knn.py
     ├── naive_bayes.py
     └── random_forest.py
-```
-
----
-
-## 12. Requirements
-
+11. Requirements
 The project uses the following Python libraries:
 
-```text
 pandas
 numpy
 scikit-learn
 matplotlib
 seaborn
-```
-
 Install the dependencies using:
 
-```bash
 pip install -r requirements.txt
-```
+12. Execution Instructions
+Google Colab
+The project was developed and executed in Google Colab.
 
----
+Execution steps:
 
-## 13. Execution Instructions
-
-### Google Colab
-
-1. Open the project notebook in Google Colab.
-2. Install/import the required libraries.
-3. Load the selected dataset.
-4. Perform dataset analysis.
-5. Perform preprocessing.
-6. Perform the 80:20 stratified train-test split.
-7. Train all five models.
-8. Calculate the six required metrics.
-9. Generate the comparison table and visualizations.
-10. Export the test data used in the experiment.
-
-### Python / Local Environment
-
+Import the required Python libraries.
+Load the UCI Adult dataset.
+Inspect the dataset.
+Identify missing values.
+Identify and remove duplicate records.
+Examine class distribution.
+Separate input features and target variable.
+Identify numerical and categorical features.
+Perform the 80:20 stratified train-test split.
+Apply preprocessing using the training data.
+Train all five classification models.
+Calculate Accuracy, AUC, Precision, Recall, F1 and MCC.
+Generate the model comparison table.
+Generate the heatmap and bar chart.
+Export test_data.csv and metrics.csv.
+Running from GitHub
 Clone the repository:
 
-```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
-```
+Open the project:
 
-Move into the project:
-
-```bash
 cd ML_Assignment_2_Classification
-```
+Install the required packages:
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
-```
+Run the individual model files:
 
-Run the individual models:
-
-```bash
 python model/logistic_regression.py
 python model/decision_tree.py
 python model/knn.py
 python model/naive_bayes.py
 python model/random_forest.py
-```
+13. Test Data
+The test data used in the experiment is stored in:
 
----
+test_data.csv
 
-## 14. Test Data
+The notebook created this file from the 20% test split used during model evaluation.
 
-The test data used in the experiments is stored in:
+The test set contains:
 
-`test_data.csv`
+6,508 records
+and includes the input features together with the binary target column:
 
-This file should contain the test data used for the final model evaluation.
+income_binary
 
----
+14. Reproducibility
+The project uses:
 
-## 15. Reproducibility
-
-The project uses a fixed random seed:
-
-```text
 random_state = 42
-```
+The train-test split is stratified, and the same dataset and preprocessing approach are used consistently across all five classification models.
 
-The same dataset and consistent preprocessing approach are used for all five classification models.
+15. BITS Virtual Lab Execution
+The completed project must also be executed in the BITS Virtual Lab.
 
----
+A screenshot of the assignment execution in the BITS Virtual Lab should be captured and included in the final submission PDF.
 
-## 16. BITS Virtual Lab Execution
+16. Conclusion
+This project implemented and compared five machine learning classification algorithms using the UCI Adult / Census Income dataset.
 
-The final project must also be executed in the BITS Virtual Lab.
+The preprocessing included:
 
-The required execution screenshot should be captured from the BITS Virtual Lab and included in the final submission PDF.
+Missing-value handling
+Duplicate removal
+Categorical encoding
+Numerical feature scaling
+80:20 stratified train-test split
+Fixed random seed
+Training-only preprocessing
+The five models were evaluated using six metrics:
 
----
+Accuracy
+AUC
+Precision
+Recall
+F1 Score
+MCC
+Based on the final experimental results, Random Forest achieved the highest overall average score of 0.744254 and was selected as the overall winner.
 
-## 17. Conclusion
+17. Academic Integrity
+This project should be reviewed, understood, tested, and adapted before submission.
 
-This project implements and compares five machine learning classification algorithms using the same dataset and consistent preprocessing and evaluation methods.
+All reported metrics, observations, visualizations and conclusions should correspond to the actual execution of the project.
 
-The comparison is based on Accuracy, AUC, Precision, Recall, F1 Score and Matthews Correlation Coefficient.
 
-The final conclusion and overall winning model will be determined from the actual experimental results.
 
----
 
-## 18. Academic Integrity
 
-This project should be reviewed, understood, tested, and adapted by the student before submission.
-
-All reported metrics, observations, visualizations, and conclusions must come from the student's own execution of the project.
+⋮⋮⋮⋮⋮⋮⋮⋮
